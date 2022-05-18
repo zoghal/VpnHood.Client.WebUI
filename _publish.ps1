@@ -1,4 +1,5 @@
-$solutionDir = Split-Path -parent $PSScriptRoot;
+$solutionDir = Join-Path -Path (Split-Path -parent $PSScriptRoot) -ChildPath "VpnHood";
+
 . "$solutionDir\pub\Common.ps1";
 
 $distDir= "$PSScriptRoot\dist";

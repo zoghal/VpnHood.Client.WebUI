@@ -50,14 +50,13 @@
 
     <v-container
       id="sectionWrapperBkgnd"
-      fill-height
       fluid
-      :class="`px-4 pt-4 px-sm-8 pt-sm-5 state-${connectionState.toLowerCase()}`"
+      :class="`my-0 py-0 state-${connectionState.toLowerCase()}`"
     >
-      <v-row class="align-self-start">
+      <v-row class="fill-height my-0 justify-center">
         <!-- AppBar -->
-        <v-col cols="12">
-          <v-app-bar color="transparent" dark elevation="0">
+        <v-col cols="12" align-self="start" class="px-0 my-1 py-0">
+          <v-app-bar dense color="transparent" dark elevation="0">
             <v-app-bar-nav-icon
               @click.stop="store.navigationDrawer = !store.navigationDrawer"
             />
@@ -69,6 +68,7 @@
               max-height="20"
               max-width="20"
             ></v-img>
+            <v-spacer></v-spacer>
             <v-toolbar-title class="app-title">{{
               $t("appName")
             }}</v-toolbar-title>
@@ -83,17 +83,10 @@
             />
           </v-app-bar>
         </v-col>
-
-        <!-- Circles -->
-        <v-col
-          cols="12"
-          md="6"
-          class="ma-0 pa-0"
-          align="center"
-          id="middleSection"
-        >
+        <!-- Circle -->
+        <v-col cols="12" class="text-center" id="middleSection">
           <!-- Speed -->
-          <div class="py-0 my-2 text-center" style="display: inline-flex">
+          <div class="text-center d-inline-flex">
             <div class="mx-2">
               <span class="speedLabel">{{ $t("downloadSpeed") }}:</span>
               <span class="speedValue">
@@ -110,7 +103,7 @@
             </div>
           </div>
 
-          <div id="circleOuter" class="mb-8">
+          <div id="circleOuter" class="my-4 my-md-8">
             <div id="circle">
               <div id="circleContent" class="align-center">
                 <span id="stateText">{{ store.connectionStateText("$") }}</span>
@@ -174,82 +167,60 @@
             <span>{{ $t("disconnecting") }}</span>
           </v-btn>
         </v-col>
-
         <!-- Config -->
-        <!-- <div id="configSection" class="align-self-end"> -->
-        <v-col cols="12" md="6" class="py-1 mt-5" id="configSection" >
+        <v-col
+          cols="12"
+          sm="8"
+          md="6"
+          lg="5"
+          id="configSection"
+          align-self="end"
+          class="mb-5 mt-5 mt-md-0"
+        >
           <!-- *** ipFilter *** -->
-          <div>
-            <v-icon class="config-icon" @click="showIpFilterSheet()"
-              >public</v-icon
-            >
-            <span class="config-label" @click="showIpFilterSheet()">{{
-              $t("ipFilterStatus_title")
-            }}</span>
-            <v-icon class="config-arrow" flat @click="showIpFilterSheet()"
-              >keyboard_arrow_right</v-icon
-            >
-            <span class="config" @click="showIpFilterSheet()">
-              {{ this.ipFilterStatus }}</span
-            >
-          </div>
+          <button class="mb-2" type="button" @click="showIpFilterSheet()">
+            <v-icon class="config-icon">public</v-icon>
+            <span class="config-label">{{ $t("ipFilterStatus_title") }}</span>
+            <v-icon class="config-arrow" flat>keyboard_arrow_right</v-icon>
+            <span class="config">{{ this.ipFilterStatus }}</span>
+          </button>
 
           <!-- *** appFilter *** -->
-          <div
-            class="py-1"
+          <button
+            type="button"
+            class="mb-2"
+            @click="showAppFilterSheet()"
             v-if="
               store.features.isExcludeAppsSupported ||
               store.features.isIncludeAppsSupported
             "
           >
-            <v-icon class="config-icon" @click="showAppFilterSheet()"
-              >apps</v-icon
-            >
-            <span class="config-label" @click="showAppFilterSheet()">{{
-              $t("appFilterStatus_title")
-            }}</span>
-            <v-icon class="config-arrow" flat @click="showAppFilterSheet()"
-              >keyboard_arrow_right</v-icon
-            >
-            <span class="config" @click="showAppFilterSheet()">
-              {{ this.appFilterStatus }}</span
-            >
-          </div>
+            <v-icon class="config-icon">apps</v-icon>
+            <span class="config-label">{{ $t("appFilterStatus_title") }}</span>
+            <v-icon class="config-arrow">keyboard_arrow_right</v-icon>
+            <span class="config">{{ this.appFilterStatus }}</span>
+          </button>
 
           <!-- *** Protocol *** -->
-          <div class="py-1">
-            <v-icon class="config-icon" @click="showProtocolSheet()"
-              >settings_ethernet</v-icon
-            >
-            <span class="config-label" @click="showProtocolSheet()">{{
-              $t("protocol_title")
-            }}</span>
-            <v-icon class="config-arrow" flat @click="showProtocolSheet()"
-              >keyboard_arrow_right</v-icon
-            >
-            <span class="config" @click="showProtocolSheet()">
-              {{ protocolStatus }}</span
-            >
-          </div>
+          <button type="button" class="mb-2" @click="showProtocolSheet()">
+            <v-icon class="config-icon">settings_ethernet</v-icon>
+            <span class="config-label">{{ $t("protocol_title") }}</span>
+            <v-icon class="config-arrow" flat>keyboard_arrow_right</v-icon>
+            <span class="config">{{ protocolStatus }}</span>
+          </button>
 
           <!-- *** server *** -->
-          <div class="py-1">
-            <v-icon class="config-icon" @click="showServersSheet()">dns</v-icon>
-            <span class="config-label" @click="showServersSheet()">{{
-              $t("selectedServer")
-            }}</span>
-            <v-icon class="config-arrow" flat @click="showServersSheet()"
-              >keyboard_arrow_right</v-icon
-            >
-            <span class="config" @click="showServersSheet()">
-              {{ store.clientProfile.name("$") }}</span
-            >
-          </div>
+          <button type="button" @click="showServersSheet()">
+            <v-icon class="config-icon">dns</v-icon>
+            <span class="config-label">{{ $t("selectedServer") }}</span>
+            <v-icon class="config-arrow" flat>keyboard_arrow_right</v-icon>
+            <span class="config">{{ store.clientProfile.name("$") }}</span>
+          </button>
         </v-col>
       </v-row>
     </v-container>
   </div>
-  <!-- rootContaier -->
+  <!-- rootContainer -->
 </template>
 
 <style>
@@ -355,6 +326,7 @@ export default {
     },
 
     bandwidthUsage() {
+
       if (!this.store.state || !this.store.state.sessionStatus || !this.store.state.sessionStatus.accessUsage)
         return null;
       let accessUsage = this.store.state.sessionStatus.accessUsage;

@@ -1,6 +1,6 @@
 module.exports = {
   devServer: {
-    port: 8081  // only 30080, 8080 and 8081 is allowed by VpnHoodUI CORS
+    port: 30080  // only 30080, 8080 and 8081 is allowed by VpnHoodUI CORS
   },
 
   configureWebpack: {
