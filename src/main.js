@@ -10,6 +10,8 @@ import store from './store';
 import App from './App.vue';
 import AppError from './AppError';
 import './plugins/firebase';
+import "./assets/styles/custom.css";
+import "./assets/styles/vuetifyOverride.css";
 
 Vue.config.productionTip = false;
 Vue.mixin(mixin);

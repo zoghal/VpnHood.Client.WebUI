@@ -1,15 +1,8 @@
 <template>
-  <div id="sectionWrapper">
-    <!-- Add New Server Hint -->
-    <v-snackbar
-      top
-      app
-      color="success"
-      centered
-      v-model="store.newServerAdded"
-      >{{ $t("newServerAdded") }}</v-snackbar
-    >
-
+  <v-container
+    id="homeContainer"
+    :class="`h-100 py-0 state-${connectionState.toLowerCase()}`"
+  >
     <!-- Public Server Hint -->
     <v-dialog :value="store.requestedPublicServerProfileId != null" width="500">
       <v-card>
@@ -47,46 +40,17 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
-    <v-container
-      id="sectionWrapperBkgnd"
-      fluid
-      :class="`my-0 py-0 state-${connectionState.toLowerCase()}`"
-    >
-      <v-row class="fill-height my-0 justify-center">
-        <!-- AppBar -->
-        <v-col cols="12" align-self="start" class="px-0 my-1 py-0">
-          <v-app-bar dense color="transparent" dark elevation="0">
-            <v-app-bar-nav-icon
-              @click.stop="store.navigationDrawer = !store.navigationDrawer"
-            />
-            <v-img
-              v-if="0"
-              class="mx-2"
-              src="@/assets/images/logo-small.png"
-              :alt="$t('appName')"
-              max-height="20"
-              max-width="20"
-            ></v-img>
-            <v-spacer></v-spacer>
-            <v-toolbar-title class="app-title">{{
-              $t("appName")
-            }}</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <ClientProfileMenu
-              clientProfileId="$"
-              color="white"
-              :showSettingsItem="true"
-              :showAddServerItem="true"
-              :showDeleteItem="false"
-              :showRenameItem="false"
-            />
-          </v-app-bar>
-        </v-col>
-        <!-- Circle -->
-        <v-col cols="12" class="text-center" id="middleSection">
+    <v-row class="align-center h-100">
+      <!-- Circle -->
+      <v-col
+        cols="12"
+        sm="6"
+        id="middleSection"
+        class="text-center align-self-center"
+      >
+        <div class="my-card-view">
           <!-- Speed -->
-          <div class="text-center d-inline-flex">
+          <div id="speedSection" class="text-center d-inline-flex mb-8">
             <div class="mx-2">
               <span class="speedLabel">{{ $t("downloadSpeed") }}:</span>
               <span class="speedValue">
@@ -103,7 +67,7 @@
             </div>
           </div>
 
-          <div id="circleOuter" class="my-4 my-md-8">
+          <div id="circleOuter" class="">
             <div id="circle">
               <div id="circleContent" class="align-center">
                 <span id="stateText">{{ store.connectionStateText("$") }}</span>
@@ -131,113 +95,130 @@
               </div>
             </div>
           </div>
+        </div>
+      </v-col>
 
-          <!-- Connect Button -->
-          <v-btn
-            v-if="connectionState == 'None'"
-            id="connectButton"
-            class="main-button"
-            @click="store.connect('$')"
-          >
-            {{ $t("connect") }}
-          </v-btn>
-
-          <!-- Diconnect Button -->
-          <v-btn
-            v-if="
-              connectionState == 'Waiting' ||
-              connectionState == 'Connecting' ||
-              connectionState == 'Connected' ||
-              connectionState == 'Diagnosing'
-            "
-            id="disconnectButton"
-            class="main-button"
-            @click="store.disconnect()"
-          >
-            <span>{{ $t("disconnect") }}</span>
-          </v-btn>
-
-          <!-- Diconnecting -->
-          <v-btn
-            v-if="connectionState == 'Disconnecting'"
-            id="disconnectingButton"
-            class="main-button"
-            style="pointer-events: none"
-          >
-            <span>{{ $t("disconnecting") }}</span>
-          </v-btn>
-        </v-col>
-        <!-- Config -->
-        <v-col
-          cols="12"
-          sm="8"
-          md="6"
-          lg="5"
-          id="configSection"
-          align-self="end"
-          class="mb-5 mt-5 mt-md-0"
+      <!-- Connect buttons -->
+      <v-col cols="12" order-sm="12" align-self="start" class="text-center">
+        <!-- Connect Button -->
+        <v-btn
+          v-if="connectionState == 'None'"
+          id="connectButton"
+          class="main-button py-sm-8"
+          @click="store.connect('$')"
         >
+          {{ $t("connect") }}
+        </v-btn>
+
+        <!-- Diconnect Button -->
+        <v-btn
+          v-if="
+            connectionState == 'Waiting' ||
+            connectionState == 'Connecting' ||
+            connectionState == 'Connected' ||
+            connectionState == 'Diagnosing'
+          "
+          id="disconnectButton"
+          class="main-button py-sm-8"
+          @click="store.disconnect()"
+        >
+          <span>{{ $t("disconnect") }}</span>
+        </v-btn>
+
+        <!-- Diconnecting -->
+        <v-btn
+          v-if="connectionState == 'Disconnecting'"
+          id="disconnectingButton"
+          class="main-button py-sm-8"
+          style="pointer-events: none"
+        >
+          <span>{{ $t("disconnecting") }}</span>
+        </v-btn>
+      </v-col>
+
+      <!-- Config (Bottom btn)-->
+      <v-col
+        cols="12"
+        sm="6"
+        id="configSection"
+        class="align-self-end align-self-sm-auto pb-0 pb-sm-3"
+      >
+        <!--Card view apply style only on min-width 600px-->
+        <div class="my-card-view">
           <!-- *** ipFilter *** -->
-          <button class="mb-2" type="button" @click="showIpFilterSheet()">
+          <v-btn
+            depressed
+            block
+            class="config-btn mb-2"
+            @click="showIpFilterSheet()"
+          >
             <v-icon class="config-icon">public</v-icon>
             <span class="config-label">{{ $t("ipFilterStatus_title") }}</span>
             <v-icon class="config-arrow" flat>keyboard_arrow_right</v-icon>
-            <span class="config">{{ this.ipFilterStatus }}</span>
-          </button>
+            <span class="config">{{ this.clientCountryFilterStatus }}</span>
+            <v-img
+              v-if="!store.userSettings.tunnelClientCountry"
+              :src="store.getIpGroupImageUrl(store.state.clientIpGroup)"
+              max-width="24"
+              class="ma-1"
+            />
+          </v-btn>
 
           <!-- *** appFilter *** -->
-          <button
-            type="button"
-            class="mb-2"
-            @click="showAppFilterSheet()"
+          <v-btn
             v-if="
               store.features.isExcludeAppsSupported ||
               store.features.isIncludeAppsSupported
             "
+            depressed
+            block
+            class="config-btn mb-2"
+            @click="showAppFilterSheet()"
           >
             <v-icon class="config-icon">apps</v-icon>
             <span class="config-label">{{ $t("appFilterStatus_title") }}</span>
             <v-icon class="config-arrow">keyboard_arrow_right</v-icon>
             <span class="config">{{ this.appFilterStatus }}</span>
-          </button>
+          </v-btn>
 
           <!-- *** Protocol *** -->
-          <button type="button" class="mb-2" @click="showProtocolSheet()">
+          <v-btn
+            depressed
+            block
+            class="config-btn mb-2"
+            @click="showProtocolSheet()"
+          >
             <v-icon class="config-icon">settings_ethernet</v-icon>
             <span class="config-label">{{ $t("protocol_title") }}</span>
             <v-icon class="config-arrow" flat>keyboard_arrow_right</v-icon>
             <span class="config">{{ protocolStatus }}</span>
-          </button>
+          </v-btn>
 
           <!-- *** server *** -->
-          <button type="button" @click="showServersSheet()">
+          <v-btn depressed block class="config-btn" @click="showServersSheet()">
             <v-icon class="config-icon">dns</v-icon>
             <span class="config-label">{{ $t("selectedServer") }}</span>
             <v-icon class="config-arrow" flat>keyboard_arrow_right</v-icon>
             <span class="config">{{ store.clientProfile.name("$") }}</span>
-          </button>
-        </v-col>
-      </v-row>
-    </v-container>
-  </div>
-  <!-- rootContainer -->
+          </v-btn>
+        </div>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <style>
-@import "../assets/styles/custom.css";
-
 .v-input--checkbox .v-label {
   font-size: 12px;
 }
 </style>
 
 <script>
-import ClientProfileMenu from "../components/ClientProfileMenu";
 
 export default {
   name: "HomePage",
   components: {
-    ClientProfileMenu
+
   },
   created() {
     this.store.setTitle(this.$t("home"));
@@ -270,6 +251,11 @@ export default {
       if (this.store.userSettings.ipGroupFiltersMode == 'Exclude') return this.$t("ipFilterStatus_exclude", { x: ipGroupFilters.length });
       if (this.store.userSettings.ipGroupFiltersMode == 'Include') return this.$t("ipFilterStatus_include", { x: ipGroupFilters.length });
       return this.$t("ipFilterStatus_all");
+    },
+    clientCountryFilterStatus() {
+      return this.store.userSettings.tunnelClientCountry
+        ? this.$t("ipFilterStatus_all")
+        : this.$t("ipFilterStatus_excludeClientCountry");
     },
     protocolStatus() {
       return (this.store.userSettings.useUdpChannel) ? this.$t('protocol_udpOn') : this.$t('protocol_udpOff');

@@ -12,7 +12,7 @@
         </v-btn>
         <v-toolbar-title>{{ $t("protocol") }}</v-toolbar-title>
       </v-toolbar>
-      <v-radio-group v-model="useUdpChannel" v-on:change="close()">
+      <v-radio-group v-model="useUdpChannel">
         <v-card-text>{{ $t("protocol_desc") }} </v-card-text>
         <v-card-text>
           <v-radio :label="$t('protocol_udpOn')" :value="true" class="my-4"></v-radio>

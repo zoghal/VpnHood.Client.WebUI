@@ -53,7 +53,7 @@
               @click:close="updateItem(data.item.ipGroupId, false)"
             >
               <v-img
-                :src="getIpGroupImageUrl(data.item)"
+                :src="store.getIpGroupImageUrl(data.item)"
                 max-width="24"
                 class="ma-1"
               />
@@ -63,7 +63,7 @@
           <template v-slot:item="data">
             <template>
               <v-img
-                :src="getIpGroupImageUrl(data.item)"
+                :src="store.getIpGroupImageUrl(data.item)"
                 max-width="24"
                 class="ma-1"
               />
@@ -156,18 +156,6 @@ export default {
         this.store.disconnect();
       this.store.saveUserSettings();
     },
-
-    getIpGroupImageUrl(ipGroup) {
-      try {
-        if (ipGroup.ipGroupId.toLowerCase() == "custom")
-          return require(`@/assets/images/custom_flag.png`);
-        return require(`@/assets/images/country_flags/${ipGroup.ipGroupId}.png`);
-      }
-      catch
-      {
-        return null;
-      }
-    }
   }
 }
 </script>

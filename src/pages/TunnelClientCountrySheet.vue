@@ -12,11 +12,20 @@
         </v-btn>
         <v-toolbar-title>{{ $t("tunnel_mycountry") }}</v-toolbar-title>
       </v-toolbar>
-      <v-radio-group v-model="tunnelMyCountry" v-on:change="close()">
+      <v-radio-group v-model="tunnelClientCountry">
         <v-card-text>{{ $t("tunnel_mycountry_desc") }} </v-card-text>
         <v-card-text>
-          <v-radio :label="$t('tunnel_mycountry_on')" :value="true" class="my-4"></v-radio>
-          <v-radio :label="$t('tunnel_mycountry_off')" :value="false" class="my-4"> </v-radio>
+          <v-radio
+            :label="$t('tunnel_mycountry_on')"
+            :value="true"
+            class="my-4"
+          ></v-radio>
+          <v-radio
+            :label="$t('tunnel_mycountry_off')"
+            :value="false"
+            class="my-4"
+          >
+          </v-radio>
         </v-card-text>
       </v-radio-group>
       <v-card-actions>
@@ -50,13 +59,13 @@ export default {
     }
   },
   computed: {
-    tunnelMyCountry:
+    tunnelClientCountry:
     {
       get() {
-        return this.store.userSettings.tunnelMyCountry;
+        return this.store.userSettings.tunnelClientCountry;
       },
       set(value) {
-        this.store.userSettings.tunnelMyCountry = value;
+        this.store.userSettings.tunnelClientCountry = value;
         this.store.saveUserSettings();
       }
     },
@@ -77,7 +86,6 @@ export default {
   },
 
   methods: {
-
     async close() {
       this.sheetVisible = false;
     },

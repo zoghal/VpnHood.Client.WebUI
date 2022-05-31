@@ -7,7 +7,7 @@
     <ProtocolSheet />
     <AppFilterSheet v-if="this.$route.query.appfilter != null" />
     <IpFilterSheet v-if="this.$route.query.ipfilter != null" />
-    <TunnelMyCountrySheet v-if="this.$route.query.mycountry != null" />
+    <TunnelClientCountrySheet v-if="this.$route.query.mycountry != null" />
     <SettingsSheet />
     <v-navigation-drawer
       app
@@ -19,7 +19,41 @@
     >
       <Navigation />
     </v-navigation-drawer>
-
+    <!-- Add New Server Hint -->
+    <v-snackbar
+        top
+        app
+        color="success"
+        centered
+        v-model="store.newServerAdded"
+    >{{ $t("newServerAdded") }}</v-snackbar
+    >
+    <v-app-bar dense color="transparent" dark elevation="0">
+      <v-app-bar-nav-icon
+          @click.stop="store.navigationDrawer = !store.navigationDrawer"
+      />
+      <v-img
+          v-if="0"
+          class="mx-2"
+          src="@/assets/images/logo-small.png"
+          :alt="$t('appName')"
+          max-height="20"
+          max-width="20"
+      ></v-img>
+      <v-spacer></v-spacer>
+      <v-toolbar-title class="app-title">{{
+          $t("appName")
+        }}</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <ClientProfileMenu
+          clientProfileId="$"
+          color="white"
+          :showSettingsItem="true"
+          :showAddServerItem="true"
+          :showDeleteItem="false"
+          :showRenameItem="false"
+      />
+    </v-app-bar>
     <v-main>
       <router-view />
     </v-main>
@@ -41,13 +75,15 @@ import ProtocolSheet from "./pages/ProtocolSheet";
 import ServersSheet from "./pages/ServersSheet";
 import AppFilterSheet from "./pages/AppFilterSheet";
 import IpFilterSheet from "./pages/IpFilterSheet";
-import TunnelMyCountrySheet from "./pages/TunnelMyCountrySheet.vue";
+import TunnelClientCountrySheet from "./pages/TunnelClientCountrySheet.vue";
 import SettingsSheet from "./pages/SettingsSheet";
+import ClientProfileMenu from "./components/ClientProfileMenu";
 
 export default {
   name: 'App',
 
   components: {
+    ClientProfileMenu,
     Navigation,
     ErrorSheet,
     AddServerSheet,
@@ -56,7 +92,7 @@ export default {
     AppFilterSheet,
     ProtocolSheet,
     IpFilterSheet,
-    TunnelMyCountrySheet,
+    TunnelClientCountrySheet,
     SettingsSheet
   },
 

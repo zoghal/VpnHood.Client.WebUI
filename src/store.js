@@ -72,6 +72,18 @@ export default {
         }
     },
 
+    getIpGroupImageUrl(ipGroup) {
+        try {
+          if (ipGroup.ipGroupId.toLowerCase() == "custom")
+            return require(`@/assets/images/custom_flag.png`);
+          return require(`@/assets/images/country_flags/${ipGroup.ipGroupId}.png`);
+        }
+        catch
+        {
+          return null;
+        }
+      },
+
     async loadApp(options) {
         if (!options)
             options = { withState: true, withFeatures: true, withSettings: true, withClientProfileItems: true };
