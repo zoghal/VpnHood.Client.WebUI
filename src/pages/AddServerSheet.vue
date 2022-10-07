@@ -2,12 +2,7 @@
   <v-bottom-sheet v-model="sheetVisible" value="true">
     <v-sheet>
       <!-- Add Test Server -->
-      <v-card
-        v-if="testServerVisible"
-        class="mx-auto ma-5"
-        max-width="600"
-        flat
-      >
+      <v-card v-if="testServerVisible" class="mx-auto ma-5" max-width="600" flat>
         <v-card-title>{{ $t("addTestServer") }}</v-card-title>
         <v-card-subtitle>{{ $t("addTestServerSubtitle") }}</v-card-subtitle>
         <v-btn text @click="addTestServer()">{{ $t("add") }}</v-btn>
@@ -18,18 +13,9 @@
       <v-card class="mx-auto" max-width="600" flat>
         <v-card-title>{{ $t("addAcessKeyTitle") }}</v-card-title>
         <v-card-subtitle>{{ $t("addAcessKeySubtitle") }}</v-card-subtitle>
-        <v-text-field
-          v-model="accessKeyValue"
-          spellcheck="false"
-          autocomplete="off"
-          :error-messages="accessKeyErrorMessage"
-          class="mx-5"
-          @input="onKeyAccessChanged"
-          append-icon="vpn_key"
-          :placeholder="accessKeyPrefix"
-          solo
-          autofocus
-        ></v-text-field>
+        <v-text-field v-model="accessKeyValue" spellcheck="false" autocomplete="off"
+          :error-messages="accessKeyErrorMessage" class="mx-5" @input="onKeyAccessChanged" append-icon="vpn_key"
+          :placeholder="accessKeyPrefix" solo autofocus></v-text-field>
       </v-card>
     </v-sheet>
   </v-bottom-sheet>
@@ -87,7 +73,8 @@ export default {
       if (value == null || value == "")
         return;
 
-      if (!this.validateAccessKey(value)) {
+      value = this.validateAccessKey(value);
+      if (!value) {
         this.accessKeyErrorMessage = this.$t("invalidAccessKeyFormat", { prefix: this.accessKeyPrefix });
         return;
       }
@@ -107,13 +94,13 @@ export default {
 
     validateAccessKey(accessKey) {
       try {
-        accessKey = accessKey.trim();
+        accessKey = accessKey.replace(/(^[^A-Za-z0-9]*)|([^A-Za-z0-9]*$)/g, '');
         if (accessKey.indexOf("vh://") == 0) accessKey = accessKey.substr(5);
         const json = Base64.decode(accessKey);
-        return JSON.parse(json) != null;
+        return JSON.parse(json) != null ? accessKey : null;
       }
       catch (ex) {
-        return false;
+        return null;
       }
     },
 
