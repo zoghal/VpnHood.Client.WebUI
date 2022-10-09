@@ -94,7 +94,7 @@ export default {
 
     validateAccessKey(accessKey) {
       try {
-        accessKey = accessKey.replace(/(^[^A-Za-z0-9]*)|([^A-Za-z0-9]*$)/g, '');
+        accessKey = accessKey.replace(/(^[^A-Za-z0-9]*)|([^A-Za-z0-9=+/]*$)/g, '');
         if (accessKey.indexOf("vh://") == 0) accessKey = accessKey.substr(5);
         const json = Base64.decode(accessKey);
         return JSON.parse(json) != null ? accessKey : null;
