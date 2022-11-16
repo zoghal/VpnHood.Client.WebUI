@@ -94,6 +94,8 @@ const messages = {
         tunnel_mycountry_desc: "Do you want to tunnel traffic that hosted in your country?",
         tunnel_mycountry_on: "Yes, tunnel all traffic including my country (Slower).",
         tunnel_mycountry_off: "No, do not tunnel traffic from servers in my country (Faster).",
+        sessionSuppressedToOther: "You have disconnected another device!",
+        sessionSuppressedByOther: "You have been disconnected by another device!",
     },
 };
 

@@ -8,18 +8,14 @@
         <v-card-text>
           <strong>{{ $t("warning") }}! {{ $t("privacyWarning") }}</strong>
           <br />
-          <a href="https://www.vpnhood.com/privacy-policy" target="_blank">{{
-          $t("readPrivacyPolicy")
-          }}</a>
+          <a href="https://www.vpnhood.com/privacy-policy" target="_blank">{{ $t("readPrivacyPolicy") }}</a>
         </v-card-text>
-
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="
-            store.lastServerHintId = null;
-            store.requestedPublicServerProfileId = null;
-          " v-text="$t('cancel')" />
+          <v-btn color="primary" text
+            @click="store.lastServerHintId = null; store.requestedPublicServerProfileId = null;"
+            v-text="$t('cancel')" />
           <v-btn color="primary" text @click="store.connect(store.requestedPublicServerProfileId, true)"
             v-text="$t('accept')" />
         </v-card-actions>
@@ -27,14 +23,42 @@
     </v-dialog>
     <v-snackbar top :timeout="-1" :value="store.state.isWaitingForAd" class="body-2">
       <div>
-        <p class="text-center subtitle-2">
-          You have connected to a<br><b class="yellow--text">Free Public VpnHood Server!</b>
+        <p class="text-center subtitle-2"> You have connected to a<br><b class="yellow--text">Free Public VpnHood
+            Server!</b>
         </p>
-        <p class="text-justify">
-          VpnHood offers a free, open-source solution to bypass censorship. We need you to watch an ad to help us maintain these servers. Please wait...
-        </p>
+        <p class="text-justify"> VpnHood offers a free, open-source solution to bypass censorship. We need you to watch
+          an ad to help us maintain these servers. Please wait... </p>
       </div>
     </v-snackbar>
+
+    <!-- suppress-to -->
+    <v-snackbar top :timeout="-1" class="body-2" color="deep-purple accent-4"
+      @input="store.connectionHint.sessionSuppressedBy = true"
+      :value="!store.connectionHint.sessionSuppressedBy && store.state.sessionStatus != null && store.state.sessionStatus.suppressedBy != 'None'">
+      <div v-if="store.state.sessionStatus != null">
+        <span class="text-justify">{{ $t("sessionSuppressedByOther") }}</span>
+      </div>
+      <template v-slot:action="{ attrs }">
+        <v-btn text v-bind="attrs" @click="store.connectionHint.sessionSuppressedBy = true">
+          <v-icon small>close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
+
+    <!-- suppress-by -->
+    <v-snackbar top :timeout="-1" class="body-2" color="deep-purple accent-4" 
+      @input="store.connectionHint.sessionSuppressedTo = true"
+      :value="!store.connectionHint.sessionSuppressedTo && store.state.sessionStatus != null && store.state.sessionStatus.suppressedTo == 'Other'">
+      <div v-if="store.state.sessionStatus != null">
+        <span class="text-justify"> {{ $t("sessionSuppressedByOther") }}</span>
+      </div>
+      <template v-slot:action="{ attrs }">
+        <v-btn text v-bind="attrs" @click="store.connectionHint.sessionSuppressedTo = true">
+          <v-icon small>close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
+
     <v-row class="align-center h-100">
       <!-- Circle -->
       <v-col cols="12" sm="6" id="middleSection" class="text-center align-self-center">
@@ -43,25 +67,19 @@
           <div id="speedSection" class="text-center d-inline-flex mb-8">
             <div class="mx-2">
               <span class="speedLabel">{{ $t("downloadSpeed") }}:</span>
-              <span class="speedValue">
-                {{ this.formatSpeed(this.store.state.receiveSpeed) }}
-              </span>
+              <span class="speedValue"> {{ this.formatSpeed(this.store.state.receiveSpeed) }} </span>
               <span class="speedUnit">Mbps</span>
             </div>
             <div class="mx-2">
               <span class="speedLabel">{{ $t("uploadSpeed") }}:</span>
-              <span class="speedValue">
-                {{ this.formatSpeed(this.store.state.sendSpeed) }}
-              </span>
+              <span class="speedValue"> {{ this.formatSpeed(this.store.state.sendSpeed) }} </span>
               <span class="speedUnit">Mbps</span>
             </div>
           </div>
-
           <div id="circleOuter" class="">
             <div id="circle">
               <div id="circleContent" class="align-center">
                 <span id="stateText">{{ store.connectionStateText("$") }}</span>
-
                 <!-- usage -->
                 <div v-if="connectionState == 'Connected' && this.bandwidthUsage()">
                   <div id="bandwidthUsage">
@@ -71,7 +89,6 @@
                     <span>{{ this.bandwidthUsage().total }}</span>
                   </div>
                 </div>
-
                 <!-- check -->
                 <v-icon class="state-icon" v-if="stateIcon != null" size="90" color="white">{{ this.stateIcon }}
                 </v-icon>
@@ -80,15 +97,11 @@
           </div>
         </div>
       </v-col>
-
       <!-- Connect buttons -->
       <v-col cols="12" order-sm="12" align-self="start" class="text-center">
         <!-- Connect Button -->
         <v-btn v-if="connectionState == 'None'" id="connectButton" class="main-button py-sm-8"
-          @click="store.connect('$')">
-          {{ $t("connect") }}
-        </v-btn>
-
+          @click="store.connect('$')"> {{ $t("connect") }} </v-btn>
         <!-- Diconnect Button -->
         <v-btn v-if="
           connectionState == 'Waiting' ||
@@ -98,14 +111,12 @@
         " id="disconnectButton" class="main-button py-sm-8" @click="store.disconnect()">
           <span>{{ $t("disconnect") }}</span>
         </v-btn>
-
         <!-- Diconnecting -->
         <v-btn v-if="connectionState == 'Disconnecting'" id="disconnectingButton" class="main-button py-sm-8"
           style="pointer-events: none">
           <span>{{ $t("disconnecting") }}</span>
         </v-btn>
       </v-col>
-
       <!-- Config (Bottom btn)-->
       <v-col cols="12" sm="6" id="configSection" class="align-self-end align-self-sm-auto pb-0 pb-sm-3">
         <!--Card view apply style only on min-width 600px-->
@@ -119,7 +130,6 @@
             <v-img v-if="!store.userSettings.tunnelClientCountry"
               :src="store.getIpGroupImageUrl(store.state.clientIpGroup)" max-width="24" class="ma-1" />
           </v-btn>
-
           <!-- *** appFilter *** -->
           <v-btn v-if="
             store.features.isExcludeAppsSupported ||
@@ -130,7 +140,6 @@
             <v-icon class="config-arrow">keyboard_arrow_right</v-icon>
             <span class="config">{{ this.appFilterStatus }}</span>
           </v-btn>
-
           <!-- *** Protocol *** -->
           <v-btn depressed block class="config-btn mb-2" @click="showProtocolSheet()">
             <v-icon class="config-icon">settings_ethernet</v-icon>
@@ -138,13 +147,12 @@
             <v-icon class="config-arrow" flat>keyboard_arrow_right</v-icon>
             <span class="config">{{ protocolStatus }}</span>
           </v-btn>
-
           <!-- *** server *** -->
           <v-btn depressed block class="config-btn" @click="showServersSheet()">
             <v-icon class="config-icon">dns</v-icon>
             <span class="config-label">{{ $t("selectedServer") }}</span>
             <v-icon class="config-arrow" flat>keyboard_arrow_right</v-icon>
-            <span class="config">{{ store.clientProfile.name("$") }}</span>
+            <span class="config">{{ store.clientProfile.name("$") }} </span>
           </v-btn>
         </div>
       </v-col>

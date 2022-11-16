@@ -1,11 +1,5 @@
 <template>
-  <v-bottom-sheet
-    inset
-    v-model="sheetVisible"
-    value="true"
-    max-width="600"
-    scrollable
-  >
+  <v-bottom-sheet inset v-model="sheetVisible" value="true" max-width="600" scrollable>
     <v-card rounded class="rounded-t-xl">
       <v-toolbar>
         <v-btn icon @click="sheetVisible = false">
@@ -24,45 +18,32 @@
       <v-card-text class="">
         <!-- Server lists -->
         <v-list>
-          <v-list-item
-            @click="connect(item.id)"
-            rounded
-            class="my-4 rounded-lg py-2 server-item"
-            :style="
+          <v-list-item v-for="(item, i) in store.clientProfileItems" :key="i" @click="connect(item.id)" rounded
+            class="my-4 rounded-lg py-2 server-item" :style="
               store.clientProfile.isDefault(item.id)
                 ? 'border-style: solid; border-color:#23c99d'
                 : ''
-            "
-            v-for="(item, i) in store.clientProfileItems"
-            :key="i"
-          >
+            ">
             <v-list-item-icon class="mr-3" v-if="store.clientProfile.isDefault(item.id)">
-              <v-icon
-                size="30"
-                class="active-icon"
-                >done_all</v-icon
-              >
+              <v-icon size="30" class="active-icon">done_all</v-icon>
             </v-list-item-icon>
 
             <v-list-item-content>
-              <v-list-item-title
-                class="font-weight-bold mb-2"
-                v-text="store.clientProfile.name(item.id)"
-              />
-              <v-list-item-subtitle
-                v-text="
-                  store.clientProfile.ip(item.clientProfile.clientProfileId)
-                "
-              />
+              <v-list-item-title class="font-weight-bold mb-2">
+                <span>{{ store.clientProfile.name(item.id) }} </span>
+                <span v-if="item.token.sid != null && item.token.sid > ''" class="text-caption text-right"
+                  justify="end">
+                  (sid:{{ item.token.sid }})</span>
+              </v-list-item-title>
+              <v-list-item-subtitle v-text="
+                store.clientProfile.ip(item.clientProfile.clientProfileId)
+              " />
             </v-list-item-content>
 
             <v-list-item-action>
               <!-- Menu -->
-              <ContextMenu
-                :clientProfileId="item.clientProfile.clientProfileId"
-                :showAddServerItem="false"
-                :showManageServerItem="false"
-              />
+              <ContextMenu :clientProfileId="item.clientProfile.clientProfileId" :showAddServerItem="false"
+                :showManageServerItem="false" />
             </v-list-item-action>
           </v-list-item>
         </v-list>
@@ -102,22 +83,27 @@ export default {
   components: {
     ContextMenu
   },
+
   created() {
     this.isRouterBusy = false;
   },
+
   beforeDestroy() {
   },
+
   data: () => ({
   }),
+
   computed: {
     sheetVisible: {
       get() {
         return this.$route.query.servers != null;
       },
+
       set(value) {
         if (!value && !this.isRouterBusy) {
           this.isRouterBusy = true;
-          this.$router.back(); 
+          this.$router.back();
         }
       }
     }
@@ -128,6 +114,7 @@ export default {
       this.isRouterBusy = false;
     }
   },
+
   methods: {
     connect(clientProfileId) {
       this.store.connect(clientProfileId);

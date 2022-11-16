@@ -19,9 +19,9 @@ export default {
     },
 
     updateId(clientProfileId) {
-
         if (clientProfileId == '$') {
-            clientProfileId = store.state.defaultClientProfileId;
+            clientProfileId = store.state.activeClientProfileId;
+            if (!clientProfileId) clientProfileId = store.state.defaultClientProfileId;
             let res = this.items.find(x => x.clientProfile.clientProfileId == clientProfileId);
             if (!res && this.items.length > 0)
                 clientProfileId = this.items[0].clientProfile.clientProfileId;
@@ -56,8 +56,23 @@ export default {
 
         let clientProfileItem = this.item(clientProfileId);
         let token = clientProfileItem.token;
-        var endPoints = token.ep!=null ? token.ep.join(",") : null;
+        var endPoints = "";
+        if (token.ep != null) {
+            for (var i = 0; i < token.ep.length; i++) {
+                endPoints += this.redactIp(token.ep[i]);
+                if (i < token.ep.length - 1)
+                    endPoints += " ,";
+            }
+        }
+
         return token && token.isv ? `${token.hname}:${token.hport}` : endPoints;
+    },
+
+    redactIp(ipAddress) {
+        if (ipAddress == null) return "";
+        let tokens = ipAddress.split(".");
+        let ret = tokens[0] + ".*.*." + tokens[3];
+        return ret;
     },
 
     isDefault(clientProfileId) {

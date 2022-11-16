@@ -21,6 +21,10 @@ export default {
     ipGroups: null,
     newServerAdded: false,
     lastServerHintId: null,
+    connectionHint: {
+        sessionSuppressedBy: false,
+        sessionSuppressedTo: false
+    },
 
     navigationItems() {
         return [
@@ -114,6 +118,7 @@ export default {
         this.state.hasDiagnosedStarted = false;
         this.state.activeClientProfileId = clientProfileId;
         this.state.defaultClientProfileId = clientProfileId;
+        this.userSettings.defaultClientProfileId = clientProfileId;
         this.state.connectionState = "Connecting";
 
         // show hint
@@ -125,8 +130,15 @@ export default {
                 return;
             }
         }
+        
         this.requestedPublicServerProfileId = null;
+        this.clearConnectionHint();
         return this.invoke("connect", { clientProfileId });
+    },
+
+    clearConnectionHint(){
+        this.connectionHint.sessionSuppressedBy = false;
+        this.connectionHint.sessionSuppressedTo = false;
     },
 
     disconnect() {
@@ -141,6 +153,7 @@ export default {
         this.state.hasDiagnosedStarted = true;
         this.state.activeClientProfileId = clientProfileId;
         this.state.defaultClientProfileId = clientProfileId;
+        this.userSettings.defaultClientProfileId = clientProfileId;
         return this.invoke("diagnose", { clientProfileId });
     },
 
