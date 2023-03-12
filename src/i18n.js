@@ -94,8 +94,15 @@ const messages = {
         tunnel_mycountry_desc: "Do you want to tunnel traffic that hosted in your country?",
         tunnel_mycountry_on: "Yes, tunnel all traffic including my country (Slower).",
         tunnel_mycountry_off: "No, do not tunnel traffic from servers in my country (Faster).",
-        sessionSuppressedToOther: "You have disconnected another device!",
-        sessionSuppressedByOther: "You have been disconnected by another device!",
+        sessionSuppressedToOther: "You disconnected another device because you used the same access key on multiple devices!",
+        sessionSuppressedByOther: "You have been disconnected because another device connected with your access key!",
+        versionIsDeprecated: "Your VpnHood app is deprecated and will stop working sooner or later! Consider upgrading as soon as possible.",
+        versionIsOld: "There is a new version available to install.",
+        install: "Install",
+        ignore: "Ignore",
+        update: "Update",
+        currentVersion: "Your Version:",
+        newVersion: "New Version:"
     },
 };
 

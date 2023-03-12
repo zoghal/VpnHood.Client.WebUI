@@ -13,8 +13,7 @@
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" text
-            @click="store.lastServerHintId = null; store.requestedPublicServerProfileId = null;"
+          <v-btn color="primary" text @click="store.lastServerHintId = null; store.requestedPublicServerProfileId = null;"
             v-text="$t('cancel')" />
           <v-btn color="primary" text @click="store.connect(store.requestedPublicServerProfileId, true)"
             v-text="$t('accept')" />
@@ -46,7 +45,7 @@
     </v-snackbar>
 
     <!-- suppress-by -->
-    <v-snackbar top :timeout="-1" class="body-2" color="deep-purple accent-4" 
+    <v-snackbar top :timeout="-1" class="body-2" color="deep-purple accent-4"
       @input="store.connectionHint.sessionSuppressedTo = true"
       :value="!store.connectionHint.sessionSuppressedTo && store.state.sessionStatus != null && store.state.sessionStatus.suppressedTo == 'Other'">
       <div v-if="store.state.sessionStatus != null">
@@ -59,6 +58,32 @@
       </template>
     </v-snackbar>
 
+    <!-- upgrade -->
+    <v-snackbar top :timeout="-1" :class="'version-notify body-2' + 'version-' + store.state.versionStatus"
+      vertical="vertical" :color="store.state.versionStatus == 'Deprecated' ? 'warning' : 'info'"
+      @input="store.updateHintDate = new Date()"
+      :value="!store.updateHintDate &&
+        store.state.lastPublishInfo != null &&
+        store.state.lastPublishInfo.installationPageUrl && (store.state.versionStatus == 'Old' || store.state.versionStatus == 'Deprecated')">
+      <div>
+        <span v-if="store.state.versionStatus == 'Deprecated'" class="text-justify">
+          {{ $t("versionIsDeprecated") }}</span>
+        <span v-if="store.state.versionStatus == 'Old'" class="text-justify"> {{ $t("versionIsOld") }}</span>
+        <p></p>
+        <div class="text-justify"> {{ $t("currentVersion") }} {{ store.formatVersion(store.appVersion()) }}</div>
+        <div class="text-justify"> {{ $t("newVersion") }} {{ store.appNewVersion() }}</div>
+      </div>
+      <template v-slot:action="{ attrs }">
+        <v-btn v-if="store.state.lastPublishInfo" text :href="store.state.lastPublishInfo.installationPageUrl"
+          target="_blank">
+          {{ $t("update") }}
+        </v-btn>
+        <v-btn text v-bind="attrs" @click="store.updateHintDate = new Date()">
+          {{ $t("ignore") }}
+        </v-btn>
+      </template>
+    </v-snackbar>
+
     <v-row class="align-center h-100">
       <!-- Circle -->
       <v-col cols="12" sm="6" id="middleSection" class="text-center align-self-center">
@@ -67,12 +92,12 @@
           <div id="speedSection" class="text-center d-inline-flex mb-8">
             <div class="mx-2">
               <span class="speedLabel">{{ $t("downloadSpeed") }}:</span>
-              <span class="speedValue"> {{ this.formatSpeed(this.store.state.receiveSpeed) }} </span>
+              <span class="speedValue"> {{ this.formatSpeed(this.store.state.speed.received) }} </span>
               <span class="speedUnit">Mbps</span>
             </div>
             <div class="mx-2">
               <span class="speedLabel">{{ $t("uploadSpeed") }}:</span>
-              <span class="speedValue"> {{ this.formatSpeed(this.store.state.sendSpeed) }} </span>
+              <span class="speedValue"> {{ this.formatSpeed(this.store.state.speed.sent) }} </span>
               <span class="speedUnit">Mbps</span>
             </div>
           </div>
@@ -152,7 +177,7 @@
             <v-icon class="config-icon">dns</v-icon>
             <span class="config-label">{{ $t("selectedServer") }}</span>
             <v-icon class="config-arrow" flat>keyboard_arrow_right</v-icon>
-            <span class="config">{{ store.clientProfile.name("$") }} </span>
+            <span class="config">{{ store.clientProfile.name("$") }}</span>
           </v-btn>
         </div>
       </v-col>
@@ -268,19 +293,21 @@ export default {
 
       if (!this.store.state || !this.store.state.sessionStatus || !this.store.state.sessionStatus.accessUsage)
         return null;
+
       let accessUsage = this.store.state.sessionStatus.accessUsage;
       if (accessUsage.maxTraffic == 0)
         return null;
 
       let mb = 1000000;
       let gb = 1000 * mb;
+      var traffic = this.store.state.accountTraffic;
 
-      let ret = { used: accessUsage.sentTraffic + accessUsage.receivedTraffic, total: accessUsage.maxTraffic };
+      let ret = { used: traffic.sent + traffic.received, total: accessUsage.maxTraffic };
       // let ret = { used: 100 * mb, total: 2000 * mb };
 
       if (ret.total > 1000 * mb) {
         ret.used = (ret.used / gb).toFixed(0) + "GB";
-        ret.total = (ret.total / gb) + "GB";
+        ret.total = (ret.total / gb) + " GB";
       }
       else {
         ret.used = (ret.used / mb).toFixed(0) + "MB";

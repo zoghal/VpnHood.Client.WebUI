@@ -29,6 +29,11 @@
     height: 100%;
 }
 
+.app-version-mini {
+    font-family: 'Arial';
+    font-size: 0.7em !important
+}
+
 .app-title {
     font-family: 'Arial-Narow-Bold';
     font-size: 18px;

@@ -21,6 +21,7 @@ export default {
     ipGroups: null,
     newServerAdded: false,
     lastServerHintId: null,
+    updateHintDate: new Date(2000, 1, 1),
     connectionHint: {
         sessionSuppressedBy: false,
         sessionSuppressedTo: false
@@ -35,7 +36,20 @@ export default {
     },
 
     appVersion() {
-        return this.features.version + "." + pack.version.split(".")[2];
+        return this.formatVersion(this.features.version) + "." + pack.version.split(".")[2];
+    },
+
+    appNewVersion() {
+        return this.state.lastPublishInfo ? this.formatVersion(this.state.lastPublishInfo.version) : null;
+    },
+
+    formatVersion(version) {
+        const parts = version.split(".");
+        return `${parts[0]}.${parts[1]}.${parts[2]}`;
+    },
+
+    appBuildVersion() {
+        return this.features.version.split(".")[2];
     },
 
     setTitle(resourceValue) {
@@ -78,15 +92,15 @@ export default {
 
     getIpGroupImageUrl(ipGroup) {
         try {
-          if (ipGroup.ipGroupId.toLowerCase() == "custom")
-            return require(`@/assets/images/custom_flag.png`);
-          return require(`@/assets/images/country_flags/${ipGroup.ipGroupId}.png`);
+            if (ipGroup.ipGroupId.toLowerCase() == "custom")
+                return require(`@/assets/images/custom_flag.png`);
+            return require(`@/assets/images/country_flags/${ipGroup.ipGroupId}.png`);
         }
         catch
         {
-          return null;
+            return null;
         }
-      },
+    },
 
     async loadApp(options) {
         if (!options)
@@ -100,6 +114,10 @@ export default {
 
         if (!this.userSettings.appFilters) this.userSettings.appFilters = [];
         this.clientProfile.items = this.clientProfileItems;
+
+        //update updateHintDate
+        if (this.updateHintDate <  new Date().setDate(new Date().getDate() - 1))
+            this.updateHintDate = null;
     },
 
     saveUserSettings() {
@@ -130,13 +148,13 @@ export default {
                 return;
             }
         }
-        
+
         this.requestedPublicServerProfileId = null;
         this.clearConnectionHint();
         return this.invoke("connect", { clientProfileId });
     },
 
-    clearConnectionHint(){
+    clearConnectionHint() {
         this.connectionHint.sessionSuppressedBy = false;
         this.connectionHint.sessionSuppressedTo = false;
     },
