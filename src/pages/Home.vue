@@ -303,17 +303,9 @@ export default {
       var traffic = this.store.state.accountTraffic;
 
       let ret = { used: traffic.sent + traffic.received, total: accessUsage.maxTraffic };
-      // let ret = { used: 100 * mb, total: 2000 * mb };
 
-      if (ret.total > 1000 * mb) {
-        ret.used = (ret.used / gb).toFixed(0) + "GB";
-        ret.total = (ret.total / gb) + " GB";
-      }
-      else {
-        ret.used = (ret.used / mb).toFixed(0) + "MB";
-        ret.total = (ret.total / mb).toFixed(0) + "MB";
-      }
-
+      ret.total = ret.total >= gb ? (ret.total / gb).toFixed(1) + "GB" : (ret.total / mb).toFixed(0) + "MB";
+      ret.used = ret.used >= gb ? (ret.used / gb).toFixed(1) + "GB" : (ret.used / mb).toFixed(0) + "MB";
       return ret;
     },
 
